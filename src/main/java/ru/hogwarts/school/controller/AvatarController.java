@@ -6,14 +6,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.school.model.Avatar;
-import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.AvatarService;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.Path;
 
 @RestController
 @RequestMapping("student")
@@ -25,33 +23,39 @@ public class AvatarController {
         this.avatarService = avatarService;
     }
 
-    @GetMapping("/{id}/avatar-from-db")
-    public ResponseEntity getAvatar(@PathVariable long id) {
-        Avatar avatar = avatarService.findAvatar(id);
+    @GetMapping("/{studentId}/avatar-from-db")
+    public ResponseEntity getAvatar(@PathVariable long studentId) {
+            Avatar avatar = avatarService.findAvatarByStudentId(studentId);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
-        headers.setContentLength(avatar.getData().length);
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
-
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
+            headers.setContentLength(avatar.getData().length);
+            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
 
     @GetMapping("/{id}/avatar-from-file")
     public ResponseEntity downloadAvatar(@PathVariable long id,
-                                         HttpServletResponse response) throws IOException {
-        avatarService.downloadAvatar(id, response);
-
-        return ResponseEntity.ok().build();
+                                         HttpServletResponse response) {
+        try {
+            avatarService.downloadAvatar(id, response);
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to download avatar", e);
+        }
 
     }
 
     @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable long id,
-                                               @RequestParam MultipartFile avatar) throws IOException {
+                                               @RequestParam MultipartFile avatar) {
         if (avatar.getSize() > 1024 * 300) {
             return ResponseEntity.badRequest().body("File is too big");
         }
-        avatarService.uploadAvatar(id, avatar);
-        return ResponseEntity.ok().build();
+        try {
+            avatarService.uploadAvatar(id, avatar);
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload avatar", e);
+        }
     }
 }

@@ -51,7 +51,7 @@ public class AvatarServiceImpl implements AvatarService {
             bis.transferTo(bos);
         }
 
-        Avatar avatar = findAvatar(studentId);
+        Avatar avatar = findAvatarByStudentId(studentId);
         avatar.setStudent(student);
         avatar.setFilePath(filePath.toString());
         avatar.setFileSize(avatarFile.getSize());
@@ -60,13 +60,14 @@ public class AvatarServiceImpl implements AvatarService {
         avatarRepository.save(avatar);
 
     }
+
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     @Override
     public void downloadAvatar(Long studentId, HttpServletResponse response) throws IOException {
-        Avatar avatar = findAvatar(studentId);
+        Avatar avatar = findAvatarByStudentId(studentId);
         if (avatar == null) {
             throw new IllegalArgumentException("Students avatar with this ID does not exist: " + studentId);
 
@@ -84,12 +85,10 @@ public class AvatarServiceImpl implements AvatarService {
             response.setContentLength((int) avatar.getFileSize());
             bis.transferTo(bos);
         }
-
     }
 
-
-    public Avatar findAvatar(Long studentId) {
+    public Avatar findAvatarByStudentId(Long studentId) {
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
-    }
+}
