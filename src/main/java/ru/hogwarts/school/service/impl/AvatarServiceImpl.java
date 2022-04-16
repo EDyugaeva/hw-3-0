@@ -3,6 +3,7 @@ package ru.hogwarts.school.service.impl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
@@ -36,11 +37,15 @@ public class AvatarServiceImpl implements AvatarService {
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
         Student student = studentService.findStudent(studentId);
         if (student == null) {
-            throw new IllegalArgumentException("Student with this ID does not exist: " + studentId);
+            throw new NotFoundException("Student with this ID does not exist: " + studentId);
         }
         Path filePath = Path.of(avatarsDir, student + "." + getExtensions(avatarFile.getOriginalFilename()));
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
+        try {
+            Files.createDirectories(filePath.getParent());
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            throw new IOException("Error in creating file");
+        }
 
         try (
                 InputStream is = avatarFile.getInputStream();
@@ -49,6 +54,8 @@ public class AvatarServiceImpl implements AvatarService {
                 BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
         ) {
             bis.transferTo(bos);
+        } catch (IOException e) {
+            throw new IOException("Download error");
         }
 
         Avatar avatar = findAvatarByStudentId(studentId);
@@ -56,7 +63,11 @@ public class AvatarServiceImpl implements AvatarService {
         avatar.setFilePath(filePath.toString());
         avatar.setFileSize(avatarFile.getSize());
         avatar.setMediaType(avatarFile.getContentType());
-        avatar.setData(avatarFile.getBytes());
+        try {
+            avatar.setData(avatarFile.getBytes());
+        } catch (IOException e) {
+            throw new IOException("Download error");
+        }
         avatarRepository.save(avatar);
 
     }
@@ -68,9 +79,8 @@ public class AvatarServiceImpl implements AvatarService {
     @Override
     public void downloadAvatar(Long studentId, HttpServletResponse response) throws IOException {
         Avatar avatar = findAvatarByStudentId(studentId);
-        if (avatar == null) {
-            throw new IllegalArgumentException("Students avatar with this ID does not exist: " + studentId);
-
+        if (avatar.getData() == null) {
+            throw new NotFoundException("Students avatar with this ID does not exist: " + studentId);
         }
         Path path = Path.of(avatar.getFilePath());
         try (
@@ -84,11 +94,15 @@ public class AvatarServiceImpl implements AvatarService {
             response.setContentType(avatar.getMediaType());
             response.setContentLength((int) avatar.getFileSize());
             bis.transferTo(bos);
+        } catch (IOException e) {
+            throw new IOException("Upload error");
         }
     }
 
     public Avatar findAvatarByStudentId(Long studentId) {
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
+
+
 
 }
