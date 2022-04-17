@@ -17,7 +17,6 @@ public class FacultyServiceImpl implements FacultyService {
         this.facultyRepository = facultyRepository;
     }
 
-
     public Faculty addFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);
     }
@@ -32,7 +31,6 @@ public class FacultyServiceImpl implements FacultyService {
 
     public Faculty changeFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);
-
     }
 
     public Collection<Faculty> findFacultyInColour(String colour) {
