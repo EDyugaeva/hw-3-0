@@ -6,6 +6,7 @@ import ru.hogwarts.school.model.Student;
 import java.util.Collection;
 
 public interface StudentService {
+
     Student addStudent(Student student);
 
     void deleteStudent(long id);

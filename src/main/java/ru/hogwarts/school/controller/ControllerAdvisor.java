@@ -41,7 +41,6 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
                 .build();
     }
 
-
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleIOException(NoSuchElementException noSuchElementException) {
@@ -50,7 +49,4 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
                 .httpStatus(HttpStatus.NOT_FOUND)
                 .build();
     }
-
-
-
 }

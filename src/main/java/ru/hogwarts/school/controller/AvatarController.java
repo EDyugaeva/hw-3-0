@@ -24,12 +24,11 @@ public class AvatarController {
     }
 
     @GetMapping("/{studentId}/avatar-from-db")
-    public ResponseEntity getAvatar(@PathVariable long studentId) {
+    public ResponseEntity<byte[]> getAvatar(@PathVariable long studentId) {
         Avatar avatar = avatarService.findAvatarByStudentId(studentId);
         if (avatar == null) {
             throw new NotFoundException("Такого аватара не существует");
         }
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
         headers.setContentLength(avatar.getData().length);
@@ -37,12 +36,10 @@ public class AvatarController {
     }
 
     @GetMapping("/{id}/avatar-from-file")
-    public ResponseEntity downloadAvatar(@PathVariable long id,
+    public ResponseEntity<Void> downloadAvatar(@PathVariable long id,
                                          HttpServletResponse response) throws IOException {
         avatarService.downloadAvatar(id, response);
         return ResponseEntity.ok().build();
-
-
     }
 
     @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -53,6 +50,5 @@ public class AvatarController {
         }
         avatarService.uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
-
     }
 }

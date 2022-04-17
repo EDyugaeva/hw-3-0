@@ -39,7 +39,7 @@ public class AvatarServiceImpl implements AvatarService {
         if (student == null) {
             throw new NotFoundException("Student with this ID does not exist: " + studentId);
         }
-        Path filePath = Path.of(avatarsDir, student + "." + getExtensions(avatarFile.getOriginalFilename()));
+        Path filePath = Path.of(avatarsDir, student.getId() + "." + getExtensions(avatarFile.getOriginalFilename()));
         try {
             Files.createDirectories(filePath.getParent());
             Files.deleteIfExists(filePath);
@@ -88,7 +88,6 @@ public class AvatarServiceImpl implements AvatarService {
                 OutputStream os = response.getOutputStream();
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
                 BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
-
         ) {
             response.setStatus(200);
             response.setContentType(avatar.getMediaType());
