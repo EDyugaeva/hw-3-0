@@ -10,12 +10,10 @@ import java.util.Collection;
 @Service
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private Student findingStudent;
 
     public StudentServiceImpl(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
-
 
     public Student addStudent(Student student) {
         return studentRepository.save(student);

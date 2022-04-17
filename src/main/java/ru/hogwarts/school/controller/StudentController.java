@@ -33,7 +33,6 @@ public class StudentController {
         return ResponseEntity.ok(findingStudent);
     }
 
-
     @DeleteMapping("{id}")
     public ResponseEntity deleteStudent(@PathVariable long id) {
         studentService.deleteStudent(id);
@@ -82,5 +81,4 @@ public class StudentController {
         }
         return ResponseEntity.notFound().build();
     }
-
 }
