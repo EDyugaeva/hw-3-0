@@ -12,6 +12,10 @@ import java.util.Set;
 
 @Entity(name = "faculty")
 public class Faculty {
+    public Faculty(String name, String colour) {
+        this.name = name;
+        this.colour = colour;
+    }
 
     @Id
     @GeneratedValue
@@ -23,11 +27,17 @@ public class Faculty {
     @OneToMany(mappedBy = "faculty")
     private Set<Student> studentsInFaculty;
 
+    public void setStudentsInFaculty(Set<Student> studentsInFaculty) {
+        this.studentsInFaculty = studentsInFaculty;
+    }
+
+    public Faculty() {
+
+    }
+
     public Set<Student> getStudentsInFaculty() {
         return studentsInFaculty;
     }
-
-
 
     public Long getId() {
         return id;

@@ -20,13 +20,13 @@ public class FacultyController {
     }
 
     @PostMapping
-    public ResponseEntity addFaculty(@RequestBody Faculty faculty) {
+    public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
         Faculty addingFaculty = facultyService.addFaculty(faculty);
         return ResponseEntity.ok(addingFaculty);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getFaculty(@PathVariable long id) {
+    public ResponseEntity<Faculty> getFaculty(@PathVariable long id) {
         Faculty gettingFaculty = facultyService.findFaculty(id);
         if (gettingFaculty == null) {
             return ResponseEntity.notFound().build();
@@ -35,13 +35,13 @@ public class FacultyController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteFaculty(@PathVariable long id) {
+    public ResponseEntity<Void> deleteFaculty(@PathVariable long id) {
         facultyService.deleteFaculty(id);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping
-    public ResponseEntity changeFaculty(@RequestBody Faculty faculty) {
+    public ResponseEntity<Faculty> changeFaculty(@RequestBody Faculty faculty) {
         Faculty changingFaculty = facultyService.changeFaculty(faculty);
         if (changingFaculty == null) {
             return ResponseEntity.notFound().build();
@@ -50,7 +50,7 @@ public class FacultyController {
     }
 
     @GetMapping(params = "colour")
-    public ResponseEntity findFacultyInColour(@RequestParam(required = false) String colour) {
+    public ResponseEntity<Collection<Faculty>> findFacultyInColour(@RequestParam(required = false) String colour) {
         Collection<Faculty> faculties = facultyService.findFacultyInColour(colour);
         if (faculties.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -59,7 +59,7 @@ public class FacultyController {
     }
 
     @GetMapping(params = "nameOrColour")
-    public ResponseEntity findFacultyInNameIgnoreCase(@RequestParam(required = false) String nameOrColour) {
+    public ResponseEntity<Collection<Faculty>> findFacultyInNameIgnoreCase(@RequestParam(required = false) String nameOrColour) {
         Collection<Faculty> faculties = facultyService.findFacultyByNameOrColourIgnoreCase(nameOrColour);
         if (faculties.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -67,9 +67,9 @@ public class FacultyController {
         return ResponseEntity.ok(faculties);
     }
 
-    @GetMapping(params = "idForStudentsInFaculty")
-    public ResponseEntity findStudentsInFaculty(@RequestParam(required = false) long idForStudentsInFaculty) {
-        Collection<Student> students = facultyService.findStudentsInFaculty(idForStudentsInFaculty);
+    @GetMapping(params = "idFacultyToGetStudent")
+    public ResponseEntity<Collection<Student>> findStudentsInFaculty(@RequestParam(required = false) long idFacultyToGetStudent) {
+        Collection<Student> students = facultyService.findStudentsInFaculty(idFacultyToGetStudent);
         if (!students.isEmpty()) {
             return ResponseEntity.ok(students);
         }
