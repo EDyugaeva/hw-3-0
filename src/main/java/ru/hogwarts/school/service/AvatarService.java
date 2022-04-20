@@ -5,6 +5,7 @@ import ru.hogwarts.school.model.Avatar;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public interface AvatarService {
 
@@ -14,4 +15,5 @@ public interface AvatarService {
 
     Avatar findAvatarByStudentId(Long studentId);
 
+    List<Avatar> findAvatars(Integer pageNumber, Integer pageSize);
 }

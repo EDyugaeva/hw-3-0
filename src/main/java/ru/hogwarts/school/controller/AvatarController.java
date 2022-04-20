@@ -12,6 +12,7 @@ import ru.hogwarts.school.service.AvatarService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("student")
@@ -58,5 +59,13 @@ public class AvatarController {
             throw new RuntimeException(e);
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(path = "get-avatars")
+    public ResponseEntity<List<Avatar>> findAvatars(@RequestParam Integer pageNumber,
+                                                    @RequestParam Integer pageSize) {
+
+        return ResponseEntity.ok(avatarService.findAvatars(pageNumber, pageSize));
+
     }
 }

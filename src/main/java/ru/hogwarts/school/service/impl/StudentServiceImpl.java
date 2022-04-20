@@ -6,6 +6,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -43,5 +44,21 @@ public class StudentServiceImpl implements StudentService {
         return findStudent(id).getFaculty();
     }
 
+    public int findAmountOfStudent() {
+        return studentRepository.findAmountOfStudents();
+    }
 
+    public float findAverageAge() {
+        return studentRepository.findAverageAge();
+    }
+
+
+    @Override
+    public List<Student> findTheLastFive() {
+        List<Student> students = studentRepository.findTheLastFive();
+        if (students.isEmpty()) {
+            throw new NullPointerException("Студенты отсутствуют");
+        }
+        return students;
+    }
 }
