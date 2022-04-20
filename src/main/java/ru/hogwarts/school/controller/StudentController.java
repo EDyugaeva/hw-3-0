@@ -1,7 +1,9 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.impl.StudentServiceImpl;
 
@@ -19,9 +21,9 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity addStudent(@RequestBody Student student) {
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
         Student adding = studentService.addStudent(student);
-        return ResponseEntity.ok(adding);
+        return ResponseEntity.status(HttpStatus.CREATED).body(adding);
     }
 
     @GetMapping("{id}")
@@ -73,9 +75,9 @@ public class StudentController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping(params = {"idForFaculty"})
-    public ResponseEntity findStudentsFaculty(@RequestParam(required = false) long idForFaculty) {
-        String faculty = studentService.findStudentsFaculty(idForFaculty);
+    @GetMapping(params = {"idStudent"})
+    public ResponseEntity<String> findStudentsFaculty(@RequestParam(required = false) long idStudent) {
+        String faculty = studentService.findStudentsFaculty(idStudent);
         if (faculty != null) {
             return ResponseEntity.ok(faculty);
         }

@@ -8,10 +8,17 @@ import java.util.Objects;
 
 @Entity (name = "student")
 public class Student {
+    public Student() {
+    }
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     private String name;
     private int age;
@@ -21,6 +28,10 @@ public class Student {
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
     public String getFaculty() {
         return faculty.toString();
     }
@@ -29,7 +40,7 @@ public class Student {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -71,4 +82,6 @@ public class Student {
     public int hashCode() {
         return Objects.hash(id, name, age, faculty);
     }
+
+
 }
