@@ -8,6 +8,18 @@ import java.util.Objects;
 
 @Entity (name = "student")
 public class Student {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String name;
+
+    private int age;
+    @ManyToOne()
+    @JsonIgnore
+    @JoinColumn(name = "faculty_id")
+    private Faculty faculty;
+
     public Student() {
     }
 
@@ -15,18 +27,6 @@ public class Student {
         this.name = name;
         this.age = age;
     }
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    private String name;
-    private int age;
-
-    @ManyToOne()
-    @JsonIgnore
-    @JoinColumn(name = "faculty_id")
-    private Faculty faculty;
 
     public void setFaculty(Faculty faculty) {
         this.faculty = faculty;

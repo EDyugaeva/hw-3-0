@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "avatar")
 public class Avatar {
     @Id
     @GeneratedValue
