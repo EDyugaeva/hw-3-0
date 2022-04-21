@@ -17,26 +17,32 @@ public class FacultyServiceImpl implements FacultyService {
         this.facultyRepository = facultyRepository;
     }
 
+    @Override
     public Faculty addFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);
     }
 
+    @Override
     public void deleteFaculty(long id) {
         facultyRepository.deleteById(id);
     }
 
+    @Override
     public Faculty findFaculty(long id) {
         return facultyRepository.findById(id).get();
     }
 
+    @Override
     public Faculty changeFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);
     }
 
+    @Override
     public Collection<Faculty> findFacultyInColour(String colour) {
         return facultyRepository.findByColour(colour);
     }
 
+    @Override
     public Collection<Faculty> findFacultyByNameOrColourIgnoreCase(String string) {
         Collection<Faculty> faculties = facultyRepository.findByNameIgnoreCase(string);
         if (faculties.isEmpty()) {
@@ -45,7 +51,7 @@ public class FacultyServiceImpl implements FacultyService {
         return faculties;
     }
 
-
+    @Override
     public Collection<Student> findStudentsInFaculty(long id) {
         Faculty faculty = facultyRepository.getById(id);
         return faculty.getStudentsInFaculty();

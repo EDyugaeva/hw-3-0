@@ -100,10 +100,12 @@ public class AvatarServiceImpl implements AvatarService {
         }
     }
 
+    @Override
     public Avatar findAvatarByStudentId(Long studentId) {
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
+    @Override
     public List<Avatar> findAvatars(Integer pageNumber, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
         return avatarRepository.findAll(pageRequest).getContent();
