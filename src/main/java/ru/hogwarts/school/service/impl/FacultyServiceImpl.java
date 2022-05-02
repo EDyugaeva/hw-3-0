@@ -1,15 +1,20 @@
 package ru.hogwarts.school.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
+import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
+
+    Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
     private final FacultyRepository facultyRepository;
 
@@ -19,27 +24,36 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty addFaculty(Faculty faculty) {
-        return facultyRepository.save(faculty);
+        Faculty addingFaculty = facultyRepository.save(faculty);
+        logger.info("Faculty {} is saved", faculty);
+        return addingFaculty;
     }
 
     @Override
     public void deleteFaculty(long id) {
         facultyRepository.deleteById(id);
+        logger.info("Faculty with id {} is deleted", id);
     }
 
     @Override
     public Faculty findFaculty(long id) {
-        return facultyRepository.findById(id).get();
+        Faculty findingFaculty = facultyRepository.findById(id).get();
+        logger.info("Faculty with id {} is found", id);
+        return findingFaculty;
     }
 
     @Override
     public Faculty changeFaculty(Faculty faculty) {
-        return facultyRepository.save(faculty);
+        Faculty changingFaculty = facultyRepository.save(faculty);
+        logger.info("Faculty {} is saved", faculty);
+        return changingFaculty;
     }
 
     @Override
     public Collection<Faculty> findFacultyInColour(String colour) {
-        return facultyRepository.findByColour(colour);
+        Collection<Faculty> colouredFaculties = facultyRepository.findByColour(colour);
+        logger.info("Search was made");
+        return colouredFaculties;
     }
 
     @Override
@@ -48,13 +62,16 @@ public class FacultyServiceImpl implements FacultyService {
         if (faculties.isEmpty()) {
             faculties = facultyRepository.findByColourIgnoreCase(string);
         }
+        logger.debug("Search was made");
         return faculties;
     }
 
     @Override
     public Collection<Student> findStudentsInFaculty(long id) {
         Faculty faculty = facultyRepository.getById(id);
-        return faculty.getStudentsInFaculty();
+        Collection<Student> students = faculty.getStudentsInFaculty();
+        logger.info("Students were found");
+        return students;
     }
 
 
