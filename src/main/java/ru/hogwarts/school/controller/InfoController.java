@@ -18,4 +18,9 @@ public class InfoController {
     public ResponseEntity<Integer> getPort() {
         return ResponseEntity.ok(infoService.getPort());
     }
+
+    @GetMapping(path = "/stream/math")
+    public ResponseEntity<Integer> getMathOperation() {
+        return ResponseEntity.ok(infoService.getMathOperation());
+    }
 }

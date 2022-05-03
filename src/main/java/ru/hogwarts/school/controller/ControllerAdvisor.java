@@ -49,4 +49,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
                 .httpStatus(HttpStatus.NOT_FOUND)
                 .build();
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleIOException(NullPointerException nullPointerException) {
+        return ErrorResponse.builder()
+                .message(nullPointerException.getMessage())
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .build();
+    }
 }

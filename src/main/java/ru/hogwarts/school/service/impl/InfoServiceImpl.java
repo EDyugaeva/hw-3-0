@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.service.FacultyService;
 import ru.hogwarts.school.service.InfoService;
 
+import java.util.stream.Stream;
+
 @Service
 public class InfoServiceImpl implements InfoService {
 
@@ -20,4 +22,16 @@ public class InfoServiceImpl implements InfoService {
         logger.info("Server port " + serverPort);
         return serverPort;
     }
+
+    @Override
+    public int getMathOperation() {
+        int sum = Stream.iterate(1, a -> a + 1)
+                .limit(1_000_000)
+                .parallel()
+                .reduce(0, (a, b) -> a + b);
+        logger.debug("Calculations were made, the result is " + sum);
+        return sum;
+    }
+
+
 }

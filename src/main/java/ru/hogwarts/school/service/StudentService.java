@@ -26,4 +26,8 @@ public interface StudentService {
     float findAverageAge();
 
     List<Student> findTheLastFive();
+
+    List<Student> findStudentWithNameStartedWithA();
+
+    double getAverageAge();
 }
