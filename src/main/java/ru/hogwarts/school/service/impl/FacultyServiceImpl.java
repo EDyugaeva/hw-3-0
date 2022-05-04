@@ -87,7 +87,7 @@ public class FacultyServiceImpl implements FacultyService {
                 .sorted(Comparator.comparing(faculty -> faculty.getName().length()))
                 .findFirst().get().getName();
         if (name.isEmpty()) {
-            logger.warn("Name is null");
+            logger.warn("Name is empty");
             throw new NullPointerException("Нулевое название факультета");
         }
         return name;
