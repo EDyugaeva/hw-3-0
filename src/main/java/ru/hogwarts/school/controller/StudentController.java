@@ -108,4 +108,15 @@ public class StudentController {
     public ResponseEntity<Double> getAverageAge() {
         return ResponseEntity.ok(studentService.getAverageAge());
     }
+
+    @GetMapping(path = "/thread")
+    public void getTwoThreads() {
+        studentService.getTwoThreads();
+    }
+
+    @GetMapping(path = "/thread/synchronised")
+    public ResponseEntity getTwoSynchronisedThreads() {
+        studentService.getTwoSynchronisedThreads();
+        return ResponseEntity.ok().build();
+    }
 }
