@@ -3,13 +3,15 @@ package ru.hogwarts.school.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
-import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
@@ -72,6 +74,23 @@ public class FacultyServiceImpl implements FacultyService {
         Collection<Student> students = faculty.getStudentsInFaculty();
         logger.info("Students were found");
         return students;
+    }
+
+    @Override
+    public String findTheLongestFacultyName() {
+        List<Faculty> faculties = facultyRepository.findAll();
+        if (faculties.isEmpty()) {
+            logger.error("Faculties are empty");
+            throw new NotFoundException("Факультеты отсутствуют");
+        }
+        String name =  faculties.stream()
+                .sorted(Comparator.comparing(faculty -> faculty.getName().length()))
+                .findFirst().get().getName();
+        if (name.isEmpty()) {
+            logger.warn("Name is empty");
+            throw new NullPointerException("Нулевое название факультета");
+        }
+        return name;
     }
 
 

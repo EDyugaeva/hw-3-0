@@ -3,13 +3,19 @@ package ru.hogwarts.school.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.FacultyService;
 import ru.hogwarts.school.service.StudentService;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -73,7 +79,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public int findAmountOfStudent() {
         int amount = studentRepository.findAmountOfStudents();
-        logger.info ("Amount is " + amount);
+        logger.info("Amount is " + amount);
         return amount;
     }
 
@@ -93,4 +99,41 @@ public class StudentServiceImpl implements StudentService {
         }
         return students;
     }
+
+    @Override
+    public List<Student> findStudentWithNameStartedWithA() {
+        List<Student> allStudents = studentRepository.findAll();
+        if (allStudents.isEmpty()) {
+            logger.error("Students list is empty");
+            throw new NotFoundException("Студенты отсутствуют");
+        }
+        List<Student> students = allStudents.stream()
+                .parallel()
+                .filter(student ->
+                        student.getName().charAt(0) == 'A')
+                .sorted(Comparator.comparing(student -> student.getName()))
+                .collect(Collectors.toList());
+        if (students.isEmpty()) {
+            logger.error("There are none students with name started with A");
+            throw new NotFoundException("Студентов с именем на букву А нет");
+        }
+        logger.debug("List Students with name started with A is done");
+        return students;
+    }
+
+    @Override
+    public double getAverageAge() {
+        List<Student> allStudents = studentRepository.findAll();
+        if (allStudents.isEmpty()) {
+            logger.error("Students list is empty");
+            throw new NotFoundException("Студенты отсутствуют");
+        }
+        return allStudents.stream()
+                .parallel()
+                .mapToInt(student -> student.getAge())
+                .average()
+                .getAsDouble();
+    }
+
+
 }
