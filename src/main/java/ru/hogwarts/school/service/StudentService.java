@@ -30,4 +30,8 @@ public interface StudentService {
     List<Student> findStudentWithNameStartedWithA();
 
     double getAverageAge();
+
+    void getTwoThreads();
+
+    void getTwoSynchronisedThreads();
 }
