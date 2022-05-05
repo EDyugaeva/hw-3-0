@@ -9,17 +9,18 @@ import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.FacultyService;
 import ru.hogwarts.school.service.StudentService;
 
-import java.util.ArrayList;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+
 
 @Service
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+
+    private final Object flag = new Object();
 
     Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
@@ -133,6 +134,59 @@ public class StudentServiceImpl implements StudentService {
                 .mapToInt(student -> student.getAge())
                 .average()
                 .getAsDouble();
+    }
+
+    @Override
+    public void getTwoThreads() {
+        List<Student> allStudents = studentRepository.findAllOrderById();
+        System.out.println(allStudents.get(0));
+        System.out.println(allStudents.get(1));
+        logger.info("Main thread");
+        new Thread(() -> {
+            System.out.println(allStudents.get(2));
+            try {
+                Thread.sleep(400);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(allStudents.get(3));
+            logger.info("First thread");
+        }).start();
+        new Thread(() -> {
+            System.out.println(allStudents.get(4));
+            try {
+                Thread.sleep(400);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(allStudents.get(5));
+            logger.info("Second thread");
+        }).start();
+    }
+
+    @Override
+    public void getTwoSynchronisedThreads() {
+        List<Student> allStudents = studentRepository.findAllOrderById();
+        printStudent(allStudents, 0);
+        printStudent(allStudents, 1);
+        logger.info("Main thread");
+        new Thread(() -> {
+            printStudent(allStudents, 2);
+            printStudent(allStudents, 3);
+            logger.info("First thread");
+        }).start();
+        new Thread(() -> {
+            printStudent(allStudents, 4);
+            printStudent(allStudents, 5);
+            logger.info("Second thread");
+        }).start();
+
+    }
+
+    private void printStudent(List<Student> students, int id) {
+        synchronized (flag) {
+            System.out.println(students.get(id));
+        }
     }
 
 
